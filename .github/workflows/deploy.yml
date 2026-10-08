@@ -25,12 +25,12 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npm run build
         env:
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_API_KEY: "AIzaSyB3jXPVIskUmmmVDjRexBM0WFdVX4uy3ao"
+          VITE_FIREBASE_AUTH_DOMAIN: "concesionario-54c3b.firebaseapp.com"
+          VITE_FIREBASE_PROJECT_ID: "concesionario-54c3b"
+          VITE_FIREBASE_STORAGE_BUCKET: "concesionario-54c3b.firebasestorage.app"
+          VITE_FIREBASE_MESSAGING_SENDER_ID: "198063726464"
+          VITE_FIREBASE_APP_ID: "1:198063726464:web:5ffa5f31c497c26a2cab65"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
