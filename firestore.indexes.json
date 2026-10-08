@@ -1,0 +1,11 @@
+{
+  "indexes": [
+    { "collectionGroup": "expenses", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "archived", "order": "ASCENDING" }, { "fieldPath": "date", "order": "ASCENDING" } ] },
+    { "collectionGroup": "expenses", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "vehicleId", "order": "ASCENDING" }, { "fieldPath": "date", "order": "ASCENDING" } ] },
+    { "collectionGroup": "expenses", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "userId", "order": "ASCENDING" }, { "fieldPath": "date", "order": "ASCENDING" } ] },
+    { "collectionGroup": "expenses", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "category", "order": "ASCENDING" }, { "fieldPath": "date", "order": "ASCENDING" } ] },
+    { "collectionGroup": "expenses", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "vehicleId", "order": "ASCENDING" }, { "fieldPath": "archived", "order": "ASCENDING" }, { "fieldPath": "date", "order": "ASCENDING" } ] },
+    { "collectionGroup": "expenses", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "userId", "order": "ASCENDING" }, { "fieldPath": "archived", "order": "ASCENDING" }, { "fieldPath": "date", "order": "ASCENDING" } ] }
+  ],
+  "fieldOverrides": []
+}

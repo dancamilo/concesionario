@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Administrador = perfil en users/{uid} con role "admin" y active true.
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.active == true;
+    }
+
+    function validVehicle(d) {
+      return d.brand is string && d.brand.size() > 0
+        && d.model is string && d.model.size() > 0
+        && d.year is number
+        && d.plate is string
+        && d.mileage is number && d.mileage >= 0
+        && d.purchasePrice is number && d.purchasePrice >= 0
+        && d.purchaseDate is timestamp
+        && d.status in ['available', 'sold']
+        && d.archived is bool
+        && (d.status == 'available' || (d.salePrice is number && d.saleDate is timestamp));
+    }
+
+    function validExpense(d) {
+      return d.vehicleId is string && d.vehicleId.size() > 0
+        && exists(/databases/$(database)/documents/vehicles/$(d.vehicleId))
+        && d.userId is string
+        && d.userName is string
+        && d.category in ['fuel', 'repair', 'parking', 'washing', 'transport', 'paperwork', 'maintenance', 'other']
+        && d.description is string && d.description.size() > 0
+        && d.amount is number && d.amount > 0
+        && d.date is timestamp
+        && d.archived is bool;
+    }
+
+    // Perfiles: se crean solo desde la consola o el script de migración (nunca desde la app).
+    match /users/{userId} {
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
+      allow create, delete: if false;
+      allow update: if isAdmin()
+        && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name']);
+    }
+
+    match /vehicles/{vehicleId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && validVehicle(request.resource.data);
+      allow update: if isAdmin() && validVehicle(request.resource.data);
+      allow delete: if false;
+    }
+
+    match /expenses/{expenseId} {
+      allow read: if isAdmin();
+      // La identidad real es request.auth.uid: nadie puede crear un gasto a nombre de otro.
+      allow create: if isAdmin()
+        && request.resource.data.userId == request.auth.uid
+        && validExpense(request.resource.data);
+      // Un gasto existente nunca cambia de dueño.
+      allow update: if isAdmin()
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.userName == resource.data.userName
+        && validExpense(request.resource.data);
+      allow delete: if false;
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.action is string
+        && request.resource.data.timestamp == request.time;
+      allow update, delete: if false;
+    }
+  }
+}
