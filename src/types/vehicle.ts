@@ -2,6 +2,13 @@ import type { Timestamp } from "firebase/firestore";
 
 export type VehicleStatus = "available" | "sold";
 
+/** Aporte de un socio a la compra de un vehículo. */
+export interface PartnerContribution {
+  userId: string;
+  userName: string;
+  amount: number;
+}
+
 export interface Vehicle {
   id: string;
   brand: string;
@@ -15,6 +22,9 @@ export interface Vehicle {
   salePrice: number | null;
   saleDate: Timestamp | null;
   notes: string;
+  /** Compra en sociedad. Los vehículos anteriores no tienen estos campos (= compra individual). */
+  partnership?: boolean;
+  partners?: PartnerContribution[];
   archived: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -30,6 +40,12 @@ export interface VehicleInput {
   purchasePrice: number;
   purchaseDate: Date;
   notes: string;
+}
+
+/** Al crear: además se indica si fue compra en sociedad. No se puede cambiar al editar. */
+export interface NewVehicleInput extends VehicleInput {
+  partnership: boolean;
+  partners: PartnerContribution[];
 }
 
 export interface SaleInput {

@@ -133,6 +133,7 @@ export default function Vehicles() {
                   <td>{vehicle.model}</td>
                   <td>
                     <span className="badge badge--plate">{vehicle.plate}</span>
+                    {vehicle.partnership ? <span className="badge badge--partner">Sociedad</span> : null}
                   </td>
                   <td>
                     <VehicleStatusBadge status={vehicle.status} />

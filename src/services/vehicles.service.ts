@@ -16,7 +16,7 @@ import { db } from "./firebase";
 import { requireActor } from "./auth.service";
 import { logAction } from "./audit.service";
 import { describeError } from "./errors";
-import type { SaleInput, Vehicle, VehicleInput } from "../types/vehicle";
+import type { NewVehicleInput, SaleInput, Vehicle, VehicleInput } from "../types/vehicle";
 import type { UserProfile } from "../types/user";
 import { toMillis } from "../utils/dates";
 
@@ -78,10 +78,12 @@ export function subscribeToVehicle(
   );
 }
 
-export async function createVehicle(input: VehicleInput, profile: UserProfile | null): Promise<string> {
+export async function createVehicle(input: NewVehicleInput, profile: UserProfile | null): Promise<string> {
   const actor = requireActor(profile);
   const created = await addDoc(collection(db, VEHICLES), {
     ...editableFields(input),
+    partnership: input.partnership,
+    partners: input.partnership ? input.partners : [],
     status: "available",
     salePrice: null,
     saleDate: null,

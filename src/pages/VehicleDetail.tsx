@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import AdminBalance from "../components/expenses/AdminBalance";
 import ExpenseForm from "../components/expenses/ExpenseForm";
@@ -72,6 +72,7 @@ export default function VehicleDetail() {
   const salePrice = vehicle.status === "sold" ? vehicle.salePrice : null;
   const profit = salePrice !== null ? calculateProfit(salePrice, totalCost) : null;
   const margin = profit !== null ? calculateProfitability(profit, totalCost) : null;
+  const partners = vehicle.partnership ? (vehicle.partners ?? []) : [];
 
   const changeArchived = async (archived: boolean) => {
     setBusy(true);
@@ -178,6 +179,16 @@ export default function VehicleDetail() {
             <dd>{formatNumber(vehicle.mileage)} km</dd>
             <dt>Comprado</dt>
             <dd>{formatDate(vehicle.purchaseDate)}</dd>
+            <dt>Compra</dt>
+            <dd>{partners.length > 0 ? "En sociedad" : "Individual"}</dd>
+            {partners.map((partner) => (
+              <Fragment key={partner.userId}>
+                <dt>{partner.userName}</dt>
+                <dd>
+                  {formatCurrency(partner.amount)} ({formatPercent((partner.amount / vehicle.purchasePrice) * 100)})
+                </dd>
+              </Fragment>
+            ))}
             <dt>Notas</dt>
             <dd>{vehicle.notes || "—"}</dd>
           </dl>
